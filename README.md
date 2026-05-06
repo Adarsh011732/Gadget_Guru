@@ -4,8 +4,8 @@
 
 **Gadget Guru** is a professional, high-performance electronics recommendation and price-comparison web application. It empowers users to make informed purchasing decisions through AI-driven insights, buy-timing analysis, and a dynamic decision-support quiz.
 
-🌐 **Website Link:** [(https://needhelp-gadget.netlify.app/)] 
-📂 **Repository:** [https://github.com/Adarsh011732/Gadget_Guru](https://github.com/Adarsh011732/Gadget_Guru)
+🌐 **Website Link:** (https://needhelp-gadget.netlify.app/)
+📂 **Repository:** (https://github.com/Adarsh011732/Gadget_Guru)
 
 ---
 
