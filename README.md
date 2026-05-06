@@ -45,59 +45,60 @@ Follow these instructions to set up the project locally on your machine.
 
 ### Installation
 
+The project has been separated into two distinct environments: `frontend` and `backend`. You will need two terminal windows to run the application locally.
+
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Adarsh011732/Gadget_Guru.git
    cd Gadget_Guru
    ```
 
-2. **Install dependencies:**
+2. **Backend Setup:**
+   Open a terminal and navigate to the backend directory:
    ```bash
+   cd backend
    npm install
    ```
-
-3. **Environment Variables:**
-   Create a `.env` file in the root directory and add the necessary environment variables. Example:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret_key
-   ```
-
-4. **Seed the Database (Optional):**
-   If you want to populate the database with initial mock products:
+   Create a `.env` file in the `backend` directory using `backend/.env.example` as a template and add your required keys. Then start the server:
    ```bash
-   npm run seed
+   npm run dev
    ```
 
-5. **Run the Application:**
-   Start both the backend server and the frontend Vite development server concurrently:
+3. **Frontend Setup:**
+   Open a second terminal and navigate to the frontend directory:
    ```bash
-   npm run dev:full
+   cd frontend
+   npm install
+   ```
+   Start the Vite development server:
+   ```bash
+   npm run dev
    ```
 
-6. **Open in Browser:**
-   Navigate to `http://localhost:5173` to view the application.
+4. **Open in Browser:**
+   Navigate to `http://localhost:5173` to view the application. The frontend securely communicates with the backend API running on `http://localhost:5000`.
 
 ## 📂 Project Structure
 
 ```text
 Gadget_guru/
-├── public/              # Static public assets
-├── server/              # Backend Node.js/Express application
-│   ├── config/          # Database and server configuration
+├── backend/             # Node.js/Express Server
+│   ├── config/          # Database configuration
 │   ├── models/          # Mongoose database schemas
 │   ├── routes/          # API endpoint routes
-│   └── services/        # External services (Nodemailer, SerpApi, etc.)
-├── src/                 # Frontend React application
-│   ├── assets/          # Images, SVGs, and other media
-│   ├── context/         # React Context (AuthContext)
-│   ├── data/            # Mock data and initial product structures
-│   ├── pages/           # Application pages (Home, Discovery, DecisionSupport, etc.)
-│   └── services/        # Frontend API call integrations
-├── .env                 # Environment variables
-├── package.json         # Project metadata and dependencies
-└── vite.config.js       # Vite bundler configuration
+│   ├── services/        # External services (Nodemailer, SerpApi, etc.)
+│   ├── .env.example     # Template for environment variables
+│   └── package.json     # Backend dependencies
+├── frontend/            # React/Vite Application
+│   ├── public/          # Static public assets
+│   ├── src/             # React application source code
+│   │   ├── assets/      # Images, SVGs, and other media
+│   │   ├── context/     # React Context (AuthContext)
+│   │   ├── pages/       # Application pages
+│   │   └── services/    # Frontend API call integrations
+│   ├── package.json     # Frontend dependencies
+│   └── vite.config.js   # Vite bundler configuration
+└── README.md            # Project documentation
 ```
 
 ## 🤝 Contributing

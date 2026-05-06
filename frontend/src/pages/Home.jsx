@@ -3,128 +3,9 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, CheckCircle } from 'lucide-react';
 
-// ─── Gadget Items (only electronic gadgets) ──────────────────────────────────
-const gadgetItems = [
-  { title: 'Mobiles',       img: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=300&h=300&fit=crop', emoji: '📱' },
-  { title: 'Laptops',       img: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=300&h=300&fit=crop', emoji: '💻' },
-  { title: 'Tablets',       img: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=300&h=300&fit=crop', emoji: '🖥️' },
-  { title: 'Headphones',    img: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=300&h=300&fit=crop', emoji: '🎧' },
-  { title: 'Smartwatches',  img: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=300&h=300&fit=crop', emoji: '⌚' },
-];
-
-// ─── Single Orbital Gadget ───────────────────────────────────────────────────
-const OrbitalGadget = ({ item, index, total, progress, radius, ySquish }) => {
-  const angleOffset = (index / total) * Math.PI * 2;
-
-  const x = useTransform(progress, v => Math.cos(v + angleOffset) * radius);
-  const y = useTransform(progress, v => Math.sin(v + angleOffset) * radius * ySquish);
-  // Items in front (sin > 0) appear larger / brighter
-  const z = useTransform(progress, v => Math.sin(v + angleOffset));
-  const itemScale = useTransform(z, [-1, 0, 1], [0.6, 0.85, 1.1]);
-  const itemOpacity = useTransform(z, [-1, 0, 1], [0.3, 0.6, 0.95]);
-  const itemZIndex = useTransform(z, [-1, 1], [0, 10]);
-
-  const [hovered, setHovered] = useState(false);
-  const [imgError, setImgError] = useState(false);
-
-  return (
-    <motion.div
-      style={{
-        position: 'absolute',
-        x, y,
-        scale: itemScale,
-        opacity: itemOpacity,
-        zIndex: itemZIndex,
-        width: 90, height: 90,
-        borderRadius: '50%',
-        overflow: 'hidden',
-        border: '2px solid rgba(0,0,0,0.08)',
-        cursor: 'pointer',
-        boxShadow: hovered
-          ? '0 8px 28px rgba(0,0,0,0.2)'
-          : '0 2px 10px rgba(0,0,0,0.06)',
-        transition: 'box-shadow 0.3s',
-        background: '#f5f5f5',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      whileHover={{ scale: 1.22, zIndex: 30 }}
-    >
-      {!imgError ? (
-        <img
-          src={item.img}
-          alt={item.title}
-          onError={() => setImgError(true)}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-        />
-      ) : (
-        <div style={{ fontSize: '2rem' }}>{item.emoji}</div>
-      )}
-      <motion.div
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 4 }}
-        style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          background: 'rgba(0,0,0,0.72)', color: '#fff',
-          fontSize: '0.6rem', fontWeight: 600,
-          textAlign: 'center', padding: '0.25rem',
-          borderRadius: '0 0 50px 50px',
-        }}
-      >
-        {item.title}
-      </motion.div>
-    </motion.div>
-  );
-};
-
-// ─── Revolving Ring ──────────────────────────────────────────────────────────
-const RevolvingRing = ({ radius = 240, ySquish = 0.45, speed = 12 }) => {
-  const progress = useMotionValue(0);
-
-  useEffect(() => {
-    const ctrl = animate(progress, Math.PI * 2, {
-      duration: speed,
-      repeat: Infinity,
-      ease: 'linear',
-    });
-    return () => ctrl.stop();
-  }, [progress, speed]);
-
-  return (
-    <div style={{
-      position: 'relative',
-      width: radius * 2 + 120,
-      height: radius * 2 * ySquish + 120,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      pointerEvents: 'auto',
-    }}>
-      {/* Dashed orbit ring */}
-      <div style={{
-        position: 'absolute',
-        width: radius * 2 + 20,
-        height: radius * 2 * ySquish + 20,
-        borderRadius: '50%',
-        border: '1.5px dashed rgba(0,0,0,0.06)',
-        pointerEvents: 'none',
-      }} />
-
-      {gadgetItems.map((item, i) => (
-        <OrbitalGadget
-          key={i}
-          item={item}
-          index={i}
-          total={gadgetItems.length}
-          progress={progress}
-          radius={radius}
-          ySquish={ySquish}
-        />
-      ))}
-    </div>
-  );
-};
+import LottiePkg from 'lottie-react';
+const Lottie = LottiePkg.default ? LottiePkg.default : LottiePkg;
+import robotAnimation from '../assets/robot_animation.json';
 
 // ─── Stats Strip ─────────────────────────────────────────────────────────────
 const stats = [
@@ -225,17 +106,23 @@ const Home = () => {
           </motion.div>
         </div>
 
-        {/* Right Side Content - Orbital Animation */}
+        {/* Right Side Content - 3D Element */}
         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 10, position: 'relative', height: '600px' }}>
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
             style={{
               pointerEvents: 'none',
+              width: '100%',
+              maxWidth: '550px'
             }}
           >
-            <RevolvingRing radius={220} ySquish={0.5} speed={14} />
+            <Lottie 
+              animationData={robotAnimation} 
+              loop={true} 
+              style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.1))' }}
+            />
           </motion.div>
         </div>
       </section>
