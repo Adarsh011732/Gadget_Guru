@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+const API = import.meta.env.VITE_API_URL || '';
+const API_BASE = `${API}/api`;
 
 let cachedProducts = null;
 

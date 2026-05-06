@@ -14,6 +14,7 @@ const Login = () => {
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const { login, register } = useAuth();
   const navigate = useNavigate();
+  const API = import.meta.env.VITE_API_URL || '';
 
   const switchMode = (m) => { setMode(m); setError(''); setSuccess(''); };
 
@@ -43,19 +44,19 @@ const Login = () => {
         if (result.success) { navigate('/'); return; }
         setError(result.message);
       } else if (mode === 'forgot') {
-        const res = await fetch('/api/auth/forgot-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email }) });
+        const res = await fetch(`${API}/api/auth/forgot-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email }) });
         const data = await res.json();
         if (data.success) { setSuccess('OTP sent! Check your email.'); setTimeout(() => switchMode('otp'), 1500); }
         else setError(data.message);
       } else if (mode === 'otp') {
         if (form.otp.length < 6) { setError('Enter 6-digit OTP'); setLoading(false); return; }
-        const res = await fetch('/api/auth/verify-otp', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email, otp: form.otp }) });
+        const res = await fetch(`${API}/api/auth/verify-otp`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email, otp: form.otp }) });
         const data = await res.json();
         if (data.success) { setSuccess('OTP verified!'); setTimeout(() => switchMode('newpass'), 1200); }
         else setError(data.message);
       } else if (mode === 'newpass') {
         if (form.newPassword.length < 6) { setError('Min 6 characters'); setLoading(false); return; }
-        const res = await fetch('/api/auth/reset-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email, otp: form.otp, newPassword: form.newPassword }) });
+        const res = await fetch(`${API}/api/auth/reset-password`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: form.email, otp: form.otp, newPassword: form.newPassword }) });
         const data = await res.json();
         if (data.success) { setSuccess('Password reset! Redirecting...'); setTimeout(() => { switchMode('login'); setForm({ ...form, password: '' }); }, 2000); }
         else setError(data.message);
