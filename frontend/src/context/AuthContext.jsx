@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   // Check for saved token on mount
-  const API = import.meta.env.VITE_API_URL || 'https://YOUR-RENDER-BACKEND.onrender.com';
+  const API = import.meta.env.VITE_API_URL || 'https://gadget-guru-1.onrender.com';
 
   useEffect(() => {
     const token = localStorage.getItem('gg_token');

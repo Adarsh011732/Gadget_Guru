@@ -4,4 +4,4 @@
   command = "npm run build"
 
 [build.environment]
-  VITE_API_URL = "https://YOUR-RENDER-BACKEND.onrender.com"
+  VITE_API_URL = "https://gadget-guru-1.onrender.com"

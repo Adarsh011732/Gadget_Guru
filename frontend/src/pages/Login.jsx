@@ -14,7 +14,7 @@ const Login = () => {
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const { login, register } = useAuth();
   const navigate = useNavigate();
-  const API = import.meta.env.VITE_API_URL || 'https://YOUR-RENDER-BACKEND.onrender.com';
+  const API = import.meta.env.VITE_API_URL || 'https://gadget-guru-1.onrender.com';
 
   const switchMode = (m) => { setMode(m); setError(''); setSuccess(''); };
 

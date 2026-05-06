@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL || 'https://YOUR-RENDER-BACKEND.onrender.com';
+const API = import.meta.env.VITE_API_URL || 'https://gadget-guru-1.onrender.com';
 const API_BASE = `${API}/api`;
 
 let cachedProducts = null;
