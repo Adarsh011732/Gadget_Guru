@@ -5,7 +5,10 @@ import User from '../models/User.js';
 import { sendResetOTP } from '../services/mailService.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'gadgetguru_secret_key_2025';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 const JWT_EXPIRES = '7d';
 
 function generateToken(userId) {

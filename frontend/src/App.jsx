@@ -31,7 +31,7 @@ const Navbar = () => {
       display: 'flex', 
       justifyContent: 'space-between', 
       alignItems: 'center', 
-      padding: '1.5rem 5%', 
+      padding: '1.2rem 5%', 
       position: 'fixed', 
       top: 0, 
       width: '100%', 
@@ -45,6 +45,7 @@ const Navbar = () => {
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         <Link to="/discovery" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Discovery</Link>
         <Link to="/decision-support" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Decision Support</Link>
+        <Link to="/contact" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Contact Us</Link>
         
         {!loading && (
           user ? (
@@ -107,7 +108,7 @@ const Footer = () => (
   <footer style={{ 
     background: 'linear-gradient(145deg, #09090b 0%, #18181b 100%)', 
     color: '#fff', 
-    padding: '4rem 5% 2rem', 
+    padding: '2.5rem 5% 1.5rem', 
     marginTop: 'auto', 
     borderTop: '1px solid rgba(255,255,255,0.05)',
     boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'
@@ -175,18 +176,6 @@ const Footer = () => (
         </div>
       </div>
 
-      {/* Newsletter */}
-      <div>
-        <h4 style={{ marginBottom: '1.2rem', color: '#fff', fontSize: '1.05rem', fontWeight: 600, letterSpacing: '0.5px' }}>Stay Updated</h4>
-        <p style={{ color: '#a1a1aa', fontSize: '0.85rem', marginBottom: '1rem' }}>Get the latest gadget drops and AI insights.</p>
-        <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '0.2rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-          <input type="email" placeholder="Enter your email" style={{ background: 'transparent', border: 'none', color: '#fff', padding: '0.8rem', width: '100%', outline: 'none', fontSize: '0.85rem' }} />
-          <button style={{ background: '#fff', color: '#000', border: 'none', padding: '0.6rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
-            <Send size={16} />
-          </button>
-        </div>
-      </div>
-
     </div>
     
     <div style={{ 
@@ -197,7 +186,7 @@ const Footer = () => (
       gap: '1rem', 
       maxWidth: 1200, 
       margin: '0 auto', 
-      marginTop: '4rem', 
+      marginTop: '3rem', 
       paddingTop: '1.5rem', 
       borderTop: '1px solid rgba(255,255,255,0.05)', 
       color: '#52525b', 
