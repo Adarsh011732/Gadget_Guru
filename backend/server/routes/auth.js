@@ -63,8 +63,30 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
+    // DEBUG: Log stored password hash (temporary for debugging)
+    console.log("Stored password hash:", user.password);
+
+    // ─── Legacy Password Format Detection ───
+    // Bcrypt hashes typically start with $2a$, $2b$, or $2y$
+    const isBcrypt = /^\$2[ayb]\$/.test(user.password);
+    if (!isBcrypt) {
+      console.warn(`User ${email} has an invalid/old password format`);
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Account uses old password format. Please re-register.' 
+      });
+    }
+
     console.log("Checking password bcrypt match...");
-    const isMatch = await user.comparePassword(password);
+    let isMatch = false;
+    try {
+      isMatch = await user.comparePassword(password);
+    } catch (err) {
+      console.error("Bcrypt compare error:", err);
+      // Don't crash, just treat as no match
+      isMatch = false;
+    }
+    
     console.log("Password match:", isMatch);
 
     if (!isMatch) {
@@ -74,7 +96,7 @@ router.post('/login', async (req, res) => {
     console.log("Generating JWT...");
     if (!JWT_SECRET) {
       console.error("FATAL: JWT_SECRET is missing during login attempt");
-      return res.status(500).json({ success: false, message: "Server configuration error: JWT_SECRET missing" });
+      return res.status(500).json({ success: false, message: "Server configuration error" });
     }
 
     const token = generateToken(user._id);
@@ -85,11 +107,10 @@ router.post('/login', async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    console.error("Login Error:", error);
+    console.error("LOGIN ERROR:", error);
     res.status(500).json({ 
       success: false, 
-      message: error.message,
-      stack: error.stack 
+      message: 'Server error during login. Please try again later.'
     });
   }
 });
