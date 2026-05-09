@@ -139,8 +139,14 @@ function getSteps(category) {
 }
 
 // ─── Result Card ────────────────────────────────────────────────────────────
+// ─── Result Card ────────────────────────────────────────────────────────────
 const ResultCard = ({ p, idx }) => {
   const [imgError, setImgError] = useState(false);
+
+  // Safe checks for potentially missing data
+  const buyAdvice = p.buyAdvice || { status: 'neutral', headline: 'N/A', description: 'No advice available.' };
+  const rating = typeof p.rating === 'number' ? p.rating : 0;
+  const matchScore = typeof p.matchScore === 'number' ? p.matchScore : 0;
 
   return (
     <motion.div
@@ -206,17 +212,17 @@ const ResultCard = ({ p, idx }) => {
               fontSize: '1.6rem', fontWeight: 700,
               background: 'linear-gradient(135deg, #000 60%, #555)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'
-            }}>{p.matchScore}%</div>
+            }}>{matchScore}%</div>
             <div style={{ fontSize: '0.75rem', color: '#888' }}>AI Fit</div>
           </div>
         </div>
 
-        <p style={{ fontSize: '0.9rem', color: '#555', marginBottom: '1rem', flex: 1 }}>{p.overview}</p>
+        <p style={{ fontSize: '0.9rem', color: '#555', marginBottom: '1rem', flex: 1 }}>{p.overview || 'No description available.'}</p>
 
         {/* Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-          <span style={{ color: '#f59e0b', fontWeight: 600 }}>{'★'.repeat(Math.round(p.rating))}</span>
-          <span style={{ fontSize: '0.85rem', color: '#888' }}>{p.rating}/5</span>
+          <span style={{ color: '#f59e0b', fontWeight: 600 }}>{'★'.repeat(Math.max(0, Math.round(rating)))}</span>
+          <span style={{ fontSize: '0.85rem', color: '#888' }}>{rating}/5</span>
           {p.stock < 15 && <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 600 }}>• Low Stock</span>}
         </div>
 
@@ -224,7 +230,7 @@ const ResultCard = ({ p, idx }) => {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
           <div style={{ background: '#f5f5f5', padding: '0.75rem', borderRadius: '10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.2rem' }}>
-              <Activity size={14} /> Deal Score: {p.dealScore}/100
+              <Activity size={14} /> Deal Score: {p.dealScore || 0}/100
             </div>
             <div style={{ fontSize: '0.8rem', color: '#888' }}>Based on price history</div>
           </div>
@@ -232,11 +238,11 @@ const ResultCard = ({ p, idx }) => {
             <div style={{
               display: 'flex', alignItems: 'center', gap: '0.4rem',
               fontWeight: 600, fontSize: '0.85rem', marginBottom: '0.2rem',
-              color: p.buyAdvice.status === 'buy' ? '#16a34a' : p.buyAdvice.status === 'wait' ? '#d97706' : '#000'
+              color: buyAdvice.status === 'buy' ? '#16a34a' : buyAdvice.status === 'wait' ? '#d97706' : '#000'
             }}>
-              <Clock size={14} /> {p.buyAdvice.headline}
+              <Clock size={14} /> {buyAdvice.headline}
             </div>
-            <div style={{ fontSize: '0.8rem', color: '#888' }}>{p.buyAdvice.description}</div>
+            <div style={{ fontSize: '0.8rem', color: '#888' }}>{buyAdvice.description}</div>
           </div>
         </div>
 
@@ -244,7 +250,7 @@ const ResultCard = ({ p, idx }) => {
         <div style={{ background: '#000', color: '#fff', padding: '1rem 1.25rem', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <div style={{ fontSize: '0.8rem', opacity: 0.6, marginBottom: '0.1rem' }}>Best Price</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>₹{p.basePrice.toLocaleString('en-IN')}</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>₹{(p.basePrice || 0).toLocaleString('en-IN')}</div>
             {p.originalPrice > p.basePrice && (
               <div style={{ fontSize: '0.75rem', opacity: 0.5, textDecoration: 'line-through' }}>₹{p.originalPrice.toLocaleString('en-IN')}</div>
             )}
@@ -308,20 +314,28 @@ const DecisionSupport = () => {
 
   const runSearch = async (finalAnswers = answers) => {
     setLoading(true);
+    console.log('Running search with answers:', finalAnswers);
     try {
       // Use cached or fetch fresh
       const products = allProducts.length > 0 ? allProducts : await fetchAllGadgets();
+      console.log(`Total products available for matching: ${products.length}`);
       
-      // Score ALL products in the right category
-      const scored = products
+      const categoryMatches = products
+        .filter(p => {
+          if (!p.category || !finalAnswers.category) return false;
+          return p.category.toLowerCase() === finalAnswers.category.toLowerCase();
+        })
         .map(p => ({ ...p, matchScore: scoreProduct(p, finalAnswers) }))
-        .filter(p => p.category === finalAnswers.category && p.matchScore >= 50)
-        .sort((a, b) => b.matchScore - a.matchScore)
-        .slice(0, 10); // top 10 results only
+        // Filter out low-score matches (below 15%) to keep quality high
+        .filter(p => p.matchScore >= 15)
+        .sort((a, b) => b.matchScore - a.matchScore);
 
-      setResults(scored);
+      console.log(`Final processed matches: ${categoryMatches.length}`);
+
+      // Show up to 15 best matches
+      setResults(categoryMatches.slice(0, 15));
     } catch (err) {
-      console.error(err);
+      console.error('Search match error:', err);
       setResults([]);
     } finally {
       setLoading(false);
@@ -383,7 +397,22 @@ const DecisionSupport = () => {
 
   // ── Quiz screen ─────────────────────────────────────────────────────────
   const steps = getSteps(answers.category);
-  const step = steps[currentStep];
+  const safeCurrentStep = Math.min(currentStep, Math.max(steps.length - 1, 0));
+  const step = steps[safeCurrentStep];
+
+  if (!step) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 80px)', padding: '2rem' }}>
+        <div style={{ maxWidth: 640, textAlign: 'center', background: '#fff', borderRadius: '24px', padding: '2rem', boxShadow: '0 20px 60px rgba(0,0,0,0.08)' }}>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Something went wrong</h2>
+          <p style={{ color: '#666', marginBottom: '1.5rem' }}>We could not load the quiz properly. Please restart the experience.</p>
+          <button className="btn btn-primary" onClick={() => { setCurrentStep(0); setAnswers({ priorities: [] }); setResults(null); }}>
+            Restart quiz
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 80px)', padding: '2rem' }}>

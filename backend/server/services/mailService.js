@@ -1,8 +1,5 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-// Ensure env vars are loaded
-dotenv.config();
+import '../config/env.js';
 
 function getTransporter() {
   return nodemailer.createTransport({

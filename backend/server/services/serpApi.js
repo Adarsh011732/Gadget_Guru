@@ -195,11 +195,18 @@ export async function fetchCategoryLiveData(category, apiKey) {
  */
 function detectCategory(query) {
   const q = query.toLowerCase();
-  if (/phone|mobile|iphone|galaxy s|pixel|oneplus|redmi|poco|vivo|oppo|realme/i.test(q)) return 'Mobile';
-  if (/laptop|macbook|thinkpad|vivobook|zenbook|ideapad|legion|omen|nitro|xps/i.test(q)) return 'Laptop';
+  
+  // Filter out accessories/parts to avoid polluting main categories
+  if (/case|cover|glass|protector|cable|charger|adapter|battery|stand|keyboard|mouse|bag|sleeve/i.test(q)) {
+    return null;
+  }
+
+  if (/phone|mobile|iphone|galaxy s|pixel|oneplus|redmi|poco|vivo|oppo|realme|nothing/i.test(q)) return 'Mobile';
+  if (/laptop|macbook|thinkpad|vivobook|zenbook|ideapad|legion|omen|nitro|xps|pavilion/i.test(q)) return 'Laptop';
   if (/tablet|ipad|tab s|pad pro|pad air/i.test(q)) return 'Tablet';
-  if (/headphone|earphone|earbuds|buds|airpods|wh-1000|quietcomfort|tune/i.test(q)) return 'Headphone';
+  if (/headphone|earphone|earbuds|buds|airpods|wh-1000|quietcomfort|sennheiser/i.test(q)) return 'Headphone';
   if (/watch|smartwatch|band|fitbit|garmin|amazfit/i.test(q)) return 'Smartwatch';
+  
   return null;
 }
 
@@ -289,7 +296,9 @@ export async function searchAndCache(query, apiKey) {
   // 5. Auto-save unique products to Product collection
   let savedCount = 0;
   for (const item of parsedResults.slice(0, 8)) {
-    const category = detectedCategory || 'Mobile';
+    // Only save if category is clearly detected
+    if (!detectedCategory) continue;
+
     const productId = `serp_${normalizedQuery.replace(/\s+/g, '_').slice(0, 30)}_${item.price}`;
 
     const exists = await Product.findOne({ productId });
@@ -300,19 +309,19 @@ export async function searchAndCache(query, apiKey) {
         productId,
         name: item.title.slice(0, 120),
         brand: detectBrand(item.title),
-        category,
+        category: detectedCategory,
         basePrice: item.price,
         originalPrice: item.price,
         discountPct: 0,
         budgetCategory: inferBudget(item.price),
-        useCases: inferUseCases(category, item.price),
-        priorities: ['Performance', 'Display'],
+        useCases: inferUseCases(detectedCategory, item.price),
+        priorities: ['Performance', 'Quality'],
         image: item.thumbnail || '',
-        overview: `Discovered via search: "${query}". Price from ${item.source || 'online store'}.`,
+        overview: `Discovered via live search: "${query}". Real-time price from ${item.source || 'online store'}.`,
         specs: {},
         rating: item.rating || 4.0,
         stock: 10,
-        dealScore: Math.floor(Math.random() * 30) + 50,
+        dealScore: Math.floor(Math.random() * 20) + 60,
         storePrices: {},
       });
       savedCount++;

@@ -1,13 +1,11 @@
-import dotenv from 'dotenv';
+import './config/env.js';
 import mongoose from 'mongoose';
 import Product from './models/Product.js';
 
 // Import product data
-import { mobiles } from '../src/data/mobiles.js';
-import { laptops } from '../src/data/laptops.js';
-import { tablets, headphones, smartwatches } from '../src/data/accessories.js';
-
-dotenv.config();
+import { mobiles } from '../../frontend/src/data/mobiles.js';
+import { laptops } from '../../frontend/src/data/laptops.js';
+import { tablets, headphones, smartwatches } from '../../frontend/src/data/accessories.js';
 
 const allProducts = [...mobiles, ...laptops, ...tablets, ...headphones, ...smartwatches];
 

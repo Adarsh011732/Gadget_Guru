@@ -69,7 +69,7 @@ const Login = () => {
     width: '100%', padding: '0.9rem 1rem 0.9rem 2.8rem',
     border: '2px solid #e5e7eb', borderRadius: '12px',
     fontSize: '0.95rem', outline: 'none', transition: 'border-color 0.2s',
-    background: '#fafafa',
+    background: '#fafafa', color: '#000', cursor: 'text', caretColor: '#000',
   };
   const iconStyle = {
     position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)',
@@ -77,11 +77,11 @@ const Login = () => {
   };
 
   const modeConfig = {
-    login:    { icon: '⚙️', title: 'GadgetGuru', sub: 'Welcome back! Sign in to continue.' },
-    register: { icon: '🚀', title: 'Join GadgetGuru', sub: 'Create your account to get started.' },
-    forgot:   { icon: '📧', title: 'Forgot Password', sub: "We'll email you a 6-digit OTP." },
-    otp:      { icon: '🔢', title: 'Enter OTP', sub: `Check ${form.email} for your code.` },
-    newpass:  { icon: '🔑', title: 'New Password', sub: 'Set a strong new password.' },
+    login:    { icon: <LogIn size={34} />, title: 'GadgetGuru', sub: 'Welcome back! Sign in to continue.' },
+    register: { icon: <UserPlus size={34} />, title: 'Join GadgetGuru', sub: 'Create your account to get started.' },
+    forgot:   { icon: <Mail size={34} />, title: 'Forgot Password', sub: "We'll email you a 6-digit OTP." },
+    otp:      { icon: <KeyRound size={34} />, title: 'Enter OTP', sub: `Check ${form.email} for your code.` },
+    newpass:  { icon: <Lock size={34} />, title: 'New Password', sub: 'Set a strong new password.' },
   };
   const cfg = modeConfig[mode];
 
@@ -168,7 +168,7 @@ const Login = () => {
           {['login', 'register', 'forgot'].includes(mode) && (
             <div style={{ marginBottom: '1rem', position: 'relative' }}>
               <Mail size={18} style={iconStyle} />
-              <input type="email" placeholder="Email address" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle}
+              <input autoFocus={mode === 'login'} type="email" placeholder="Email address" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle}
                 onFocus={e => e.target.style.borderColor = '#000'} onBlur={e => e.target.style.borderColor = '#e5e7eb'} />
             </div>
           )}
@@ -233,10 +233,23 @@ const Login = () => {
               width: '100%', padding: '1rem', border: 'none', borderRadius: '12px',
               background: loading ? '#555' : '#000', color: '#fff',
               fontSize: '1rem', fontWeight: 600, cursor: loading ? 'wait' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem',
               transition: 'background 0.2s',
             }}>
-            {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }}>⏳</motion.div>
+            {loading ? <>
+                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 0.8 }}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  ⏳
+                </motion.div>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                  {mode === 'login' ? 'Signing In'
+                    : mode === 'register' ? 'Processing'
+                    : mode === 'forgot' ? 'Sending OTP'
+                    : mode === 'otp' ? 'Verifying'
+                    : 'Resetting'}
+                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#fff', opacity: 0.95, animation: 'pulseDot 1s ease-in-out infinite' }} />
+                </span>
+              </>
               : mode === 'login' ? <>Sign In <ArrowRight size={18} /></>
               : mode === 'register' ? <>Create Account <ArrowRight size={18} /></>
               : mode === 'forgot' ? <>Send OTP <Send size={16} /></>

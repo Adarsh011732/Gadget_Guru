@@ -72,6 +72,54 @@ ul {
   list-style: none;
 }
 
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #111827;
+  text-decoration: none;
+  overflow: hidden;
+  transition: color 0.28s ease;
+  z-index: 1;
+}
+
+.nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #000;
+  transform: translateX(-110%);
+  transition: transform 0.28s ease;
+  border-radius: 999px;
+  opacity: 0.95;
+  z-index: -1;
+}
+
+.nav-link:hover::before {
+  transform: translateX(0);
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-cta {
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-cta::before {
+  background: #000;
+}
+
+.nav-cta:hover {
+  color: #fff;
+}
+
 /* Utility Classes */
 .hidden { display: none !important; }
 .text-secondary { color: var(--text-secondary); }
@@ -121,4 +169,34 @@ ul {
 .btn-sm {
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
+}
+
+@keyframes blinkCursor {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 0.95;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
+  }
+}
+
+.blink-cursor {
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 0.25rem;
+  background: currentColor;
+  vertical-align: middle;
+  animation: blinkCursor 1s step-end infinite;
 }

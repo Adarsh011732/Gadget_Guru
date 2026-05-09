@@ -20,6 +20,18 @@ router.post('/', async (req, res) => {
       const liveData = await fetchLiveProductData(query, apiKey);
 
       if (liveData) {
+        // Simple name match verification to avoid "wrong product" price sync
+        const productName = product.name.toLowerCase();
+        const firstStoreResult = liveData.stores ? Object.values(liveData.stores)[0] : null;
+        
+        // If we have store data, we can check the link or source, 
+        // but for now let's just do a basic sanity check on price.
+        // If price is < 15% of current price, it's likely an accessory or mistake.
+        if (liveData.livePrice < product.basePrice * 0.15) {
+          console.log(`⚠️  Skipping sync for ${product.name}: Price ₹${liveData.livePrice} seems too low (potential accessory match).`);
+          continue;
+        }
+
         const updateFields = { 'lastSynced': new Date() };
 
         if (liveData.livePrice) {

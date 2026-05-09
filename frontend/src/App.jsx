@@ -31,21 +31,23 @@ const Navbar = () => {
       display: 'flex', 
       justifyContent: 'space-between', 
       alignItems: 'center', 
-      padding: '1.2rem 5%', 
+      padding: '0.75rem 3.5%', 
       position: 'fixed', 
       top: 0, 
       width: '100%', 
       zIndex: 100, 
-      background: 'rgba(255, 255, 255, 0.9)', 
-      backdropFilter: 'blur(10px)' 
+      background: 'rgba(255,255,255,0.96)', 
+      borderBottom: '1px solid rgba(15, 23, 42, 0.08)', 
+      boxShadow: '0 6px 20px rgba(15, 23, 42, 0.07)', 
+      backdropFilter: 'saturate(180%) blur(10px)',
     }}>
       <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '1.2rem', textDecoration: 'none', color: '#000' }}>
         <Cpu size={24} /> GadgetGuru
       </Link>
-      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <Link to="/discovery" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Discovery</Link>
-        <Link to="/decision-support" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Decision Support</Link>
-        <Link to="/contact" style={{ fontWeight: 500, textDecoration: 'none', color: '#000' }}>Contact Us</Link>
+      <div style={{ display: 'flex', gap: '0.7rem', alignItems: 'center' }}>
+        <Link to="/discovery" className="nav-link">Discovery</Link>
+        <Link to="/decision-support" className="nav-link">Decision Support</Link>
+        <Link to="/contact" className="nav-link">Contact Us</Link>
         
         {!loading && (
           user ? (
@@ -75,11 +77,7 @@ const Navbar = () => {
           ) : (
             <Link
               to="/login"
-              style={{
-                background: '#000', color: '#fff', padding: '0.5rem 1.2rem',
-                borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem',
-                textDecoration: 'none', transition: 'opacity 0.2s',
-              }}
+              className="nav-link nav-cta"
             >
               Login
             </Link>
@@ -108,22 +106,22 @@ const Footer = () => (
   <footer style={{ 
     background: 'linear-gradient(145deg, #09090b 0%, #18181b 100%)', 
     color: '#fff', 
-    padding: '2.5rem 5% 1.5rem', 
+    padding: '1rem 4% 0.8rem', 
     marginTop: 'auto', 
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-    boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'
+    borderTop: '1px solid rgba(255,255,255,0.06)',
+    boxShadow: '0 -4px 18px rgba(0,0,0,0.12)'
   }}>
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '3rem', maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.9rem', maxWidth: 1200, margin: '0 auto' }}>
       
       {/* Brand Column */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '1.4rem', margin: 0, fontWeight: 800, background: 'linear-gradient(90deg, #fff, #a1a1aa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           <Cpu size={24} color="#fff" style={{ filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5))' }} /> GadgetGuru
         </h3>
         <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: 1.6, maxWidth: '280px' }}>
           India's smartest electronics recommendation engine. We match you to the perfect device with real-time pricing and AI insights.
         </p>
-        <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.4rem' }}>
           {[TwitterIcon, LinkedinIcon, GithubIcon].map((Icon, i) => (
             <a key={i} href="#" style={{ 
               display: 'flex', alignItems: 'center', justifyContent: 'center', 
@@ -149,7 +147,7 @@ const Footer = () => (
             { name: 'Discovery & Compare', path: '/discovery' },
             { name: 'Decision Support Quiz', path: '/decision-support' }
           ].map((link, i) => (
-            <Link key={i} to={link.path} style={{ color: '#a1a1aa', textDecoration: 'none', fontSize: '0.9rem', transition: 'all 0.2s', width: 'fit-content' }} 
+            <Link key={i} to={link.path} style={{ color: '#a1a1aa', textDecoration: 'none', fontSize: '0.9rem', transition: 'all 0.2s', width: 'fit-content', transform: 'translateX(0)' }} 
               onMouseEnter={e => { e.target.style.color='#fff'; e.target.style.transform='translateX(5px)'; }} 
               onMouseLeave={e => { e.target.style.color='#a1a1aa'; e.target.style.transform='translateX(0)'; }}>
               {link.name}
@@ -167,7 +165,7 @@ const Footer = () => (
             { name: 'Privacy Policy', path: '/privacy' },
             { name: 'Terms of Service', path: '/terms' }
           ].map((link, i) => (
-            <Link key={i} to={link.path} style={{ color: '#a1a1aa', textDecoration: 'none', fontSize: '0.9rem', transition: 'all 0.2s', width: 'fit-content' }} 
+            <Link key={i} to={link.path} style={{ color: '#a1a1aa', textDecoration: 'none', fontSize: '0.9rem', transition: 'all 0.2s', width: 'fit-content', transform: 'translateX(0)' }} 
               onMouseEnter={e => { e.target.style.color='#fff'; e.target.style.transform='translateX(5px)'; }} 
               onMouseLeave={e => { e.target.style.color='#a1a1aa'; e.target.style.transform='translateX(0)'; }}>
               {link.name}
@@ -183,11 +181,11 @@ const Footer = () => (
       justifyContent: 'space-between', 
       alignItems: 'center', 
       flexWrap: 'wrap', 
-      gap: '1rem', 
+      gap: '0.75rem', 
       maxWidth: 1200, 
       margin: '0 auto', 
-      marginTop: '3rem', 
-      paddingTop: '1.5rem', 
+      marginTop: '0.7rem', 
+      paddingTop: '0.6rem', 
       borderTop: '1px solid rgba(255,255,255,0.05)', 
       color: '#52525b', 
       fontSize: '0.85rem',
@@ -206,7 +204,7 @@ function AppContent() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
       <Navbar />
-      <main style={{ paddingTop: '80px', flex: 1 }}>
+      <main style={{ paddingTop: '56px', flex: 1 }}>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />

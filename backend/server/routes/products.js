@@ -43,6 +43,19 @@ router.get('/', async (req, res) => {
   }
 });
 
+// ─── GET /api/products/stats/categories ──────────────────────────────────────
+router.get('/stats/categories', async (req, res) => {
+  try {
+    const stats = await Product.aggregate([
+      { $group: { _id: '$category', count: { $sum: 1 }, avgPrice: { $avg: '$basePrice' } } },
+      { $sort: { count: -1 } }
+    ]);
+    res.json({ success: true, data: stats });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // ─── GET /api/products/:id ──────────────────────────────────────────────────
 router.get('/:id', async (req, res) => {
   try {
@@ -94,20 +107,6 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
     res.json({ success: true, message: 'Product deleted' });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
-
-// ─── GET /api/products/category/stats ───────────────────────────────────────
-// Returns product count per category
-router.get('/stats/categories', async (req, res) => {
-  try {
-    const stats = await Product.aggregate([
-      { $group: { _id: '$category', count: { $sum: 1 }, avgPrice: { $avg: '$basePrice' } } },
-      { $sort: { count: -1 } }
-    ]);
-    res.json({ success: true, data: stats });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

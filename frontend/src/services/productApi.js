@@ -83,14 +83,17 @@ export function scoreProduct(product, answers) {
   let score = 0;
 
   // ── 1. Category match (hard requirement, 0 if wrong) ──
-  if (product.category !== answers.category) return 0;
+  if (!product.category || !answers.category) return 0;
+  if (product.category.toLowerCase() !== answers.category.toLowerCase()) return 0;
 
   // ── 2. Use case match (0–35 points) ──
   const productUseCases = product.useCases || [];
-  if (productUseCases.includes(answers.useCase)) {
+  const userUseCase = answers.useCase;
+  
+  if (productUseCases.includes(userUseCase)) {
     // Direct match: full points
     score += 35;
-  } else {
+  } else if (userUseCase) {
     // Check if there's a related use case overlap
     const relatedMap = {
       'Creative': ['Business', 'Casual'],
@@ -100,32 +103,37 @@ export function scoreProduct(product, answers) {
       'Casual': ['Student', 'Business'],
       'Developer': ['Gamer', 'Business'],
     };
-    const related = relatedMap[answers.useCase] || [];
+    const related = relatedMap[userUseCase] || [];
     const hasRelated = productUseCases.some(uc => related.includes(uc));
     if (hasRelated) {
       score += 12; // partial credit
     }
-    // else: 0 points — no match at all
   }
 
   // ── 3. Budget match (0–30 points) ──
+  const productPrice = typeof product.basePrice === 'number' ? product.basePrice : Number(product.basePrice || 0);
+  
   if (typeof answers.budget === 'number') {
-    if (product.basePrice <= answers.budget) {
+    if (productPrice > 0 && productPrice <= answers.budget) {
       score += 30; // Within budget
-    } else {
-      score -= 50; // Over budget (dealbreaker)
+    } else if (productPrice > answers.budget) {
+      // Soften penalty: -30 instead of -50
+      // This allows products slightly over budget to still show up with lower scores
+      score -= 30; 
     }
-  } else {
+  } else if (answers.budget) {
     const budgetOrder = ['Budget', 'Medium', 'High'];
     const userBudgetIdx = budgetOrder.indexOf(answers.budget);
-    const productBudgetIdx = budgetOrder.indexOf(product.budgetCategory);
+    const productBudgetIdx = budgetOrder.indexOf(product.budgetCategory || 'Medium');
 
-    if (userBudgetIdx === productBudgetIdx) {
-      score += 30; // exact match
-    } else if (productBudgetIdx < userBudgetIdx) {
-      score += 20; // product is cheaper than max budget (acceptable)
-    } else if (productBudgetIdx > userBudgetIdx) {
-      score -= 50; // product is more expensive than budget (dealbreaker)
+    if (userBudgetIdx !== -1 && productBudgetIdx !== -1) {
+      if (userBudgetIdx === productBudgetIdx) {
+        score += 30;
+      } else if (productBudgetIdx < userBudgetIdx) {
+        score += 20;
+      } else if (productBudgetIdx > userBudgetIdx) {
+        score -= 30; // Soften penalty
+      }
     }
   }
 
@@ -136,17 +144,25 @@ export function scoreProduct(product, answers) {
   score += priorMatches * 10;
 
   // ── 5. Quality bonuses (0–15 points) ──
-  // High rating
-  if (product.rating >= 4.7) score += 5;
-  else if (product.rating >= 4.4) score += 3;
+  const rating = product.rating || 0;
+  const dealScore = product.dealScore || 0;
+  const discountPct = product.discountPct || 0;
 
-  // Good deal
-  if (product.dealScore >= 90) score += 5;
-  else if (product.dealScore >= 75) score += 3;
+  if (rating >= 4.7) score += 5;
+  else if (rating >= 4.4) score += 3;
 
-  // Active discount
-  if (product.discountPct >= 10) score += 5;
-  else if (product.discountPct >= 5) score += 2;
+  if (dealScore >= 90) score += 5;
+  else if (dealScore >= 75) score += 3;
 
-  return Math.min(score, 100);
+  if (discountPct >= 10) score += 5;
+  else if (discountPct >= 5) score += 2;
+
+  // ── 6. Verification Bonus (New) ──
+  // Curated products get a small boost over auto-discovered ones
+  const isCurated = !product.productId || !product.productId.startsWith('serp_');
+  if (isCurated) {
+    score += 10;
+  }
+
+  return Math.max(0, Math.min(score, 100));
 }

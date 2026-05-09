@@ -1,43 +1,43 @@
+import './config/env.js';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import productRoutes from './routes/products.js';
 import syncRoutes from './routes/sync.js';
 import authRoutes from './routes/auth.js';
 import searchRoutes from './routes/search.js';
 
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'https://needhelp-gadget.netlify.app,http://localhost:5173')
-  .split(',')
-  .map(origin => origin.trim())
-  .filter(Boolean);
+// CORS Configuration
+const allowedOrigins = [
+  process.env.CORS_ORIGIN,
+  'https://needhelp-gadget.netlify.app', // Explicitly allow the production domain
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+].filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) {
-      callback(null, true);
-      return;
-    }
-
-    const normalizedOrigin = origin.toLowerCase();
-    const isAllowedNetlify = normalizedOrigin.endsWith('.netlify.app');
-    const isAllowedLocal = normalizedOrigin.startsWith('http://localhost') || normalizedOrigin.startsWith('http://127.0.0.1');
-    const isExplicitlyAllowed = allowedOrigins.includes(origin);
-
-    if (isAllowedNetlify || isAllowedLocal || isExplicitlyAllowed) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error(`CORS policy blocked origin: ${origin}`));
+      console.warn(`CORS blocked for origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
 app.use(express.json());
 
 // Routes

@@ -23,16 +23,16 @@ const Home = () => {
     <div>
       {/* ── Hero + Orbital Animation ── */}
       <section style={{
-        minHeight: '100vh',
+        minHeight: '65vh',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 8%',
+        padding: '0.9rem 5%',
         background: '#fff',
         position: 'relative',
         overflow: 'hidden',
-        gap: '2rem'
+        gap: '1.75rem'
       }}>
         {/* Subtle radial glow */}
         <div style={{
@@ -55,18 +55,18 @@ const Home = () => {
             transition={{ duration: 0.7 }}
           >
             <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+              display: 'inline-flex', alignItems: 'center', gap: '0.45rem',
               background: '#f5f5f5', borderRadius: '50px',
-              padding: '0.4rem 1rem', fontSize: '0.85rem', fontWeight: 500,
-              marginBottom: '1.5rem', color: '#555',
+              padding: '0.35rem 0.95rem', fontSize: '0.85rem', fontWeight: 500,
+              marginBottom: '1.2rem', color: '#555',
             }}>
               <Sparkles size={14} /> AI-powered electronics advisor
             </div>
 
             <h1 style={{
-              fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-              lineHeight: 1.1,
-              marginBottom: '1.25rem',
+              fontSize: 'clamp(2.4rem, 4.8vw, 4.4rem)',
+              lineHeight: 1.05,
+              marginBottom: '1.1rem',
               fontFamily: "'Space Grotesk', sans-serif",
             }}>
               Find Your Perfect<br />
@@ -74,11 +74,11 @@ const Home = () => {
             </h1>
 
             <p style={{
-              fontSize: 'clamp(1rem, 1.5vw, 1.1rem)',
+              fontSize: 'clamp(1rem, 1.5vw, 1.05rem)',
               color: '#666',
-              maxWidth: 500,
-              marginBottom: '2rem',
-              lineHeight: 1.7,
+              maxWidth: 470,
+              marginBottom: '1.75rem',
+              lineHeight: 1.65,
             }}>
               India's smartest electronics recommendation engine. Tell us your needs,
               we match you to the best device — then tell you <em>exactly when &amp; where to buy</em>.
@@ -91,15 +91,15 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
             style={{
-              display: 'flex', gap: '1rem',
+              display: 'flex', gap: '0.85rem',
               flexWrap: 'wrap',
             }}
           >
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
               className="btn btn-primary btn-lg" onClick={() => navigate('/decision-support')}>
               <Sparkles size={20} /> Help Me Choose
             </motion.button>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
+            <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
               className="btn btn-secondary btn-lg" onClick={() => navigate('/discovery')}>
               <CheckCircle size={20} /> Discovery &amp; Compare
             </motion.button>
@@ -107,7 +107,7 @@ const Home = () => {
         </div>
 
         {/* Right Side Content - 3D Element */}
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 10, position: 'relative', height: '600px' }}>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 10, position: 'relative', height: '520px' }}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -131,8 +131,8 @@ const Home = () => {
       <motion.section
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
         style={{
-          display: 'flex', justifyContent: 'center', gap: '4rem',
-          padding: '2.5rem 5%', background: '#000', color: '#fff',
+          display: 'flex', justifyContent: 'center', gap: '3rem',
+          padding: '1.2rem 5%', background: '#000', color: '#fff',
           flexWrap: 'wrap',
         }}
       >
@@ -147,12 +147,12 @@ const Home = () => {
 
       {/* ── CTA Section ── */}
       <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-        style={{ textAlign: 'center', padding: '6rem 5%', background: '#fff' }}>
+        style={{ textAlign: 'center', padding: '2.5rem 5% 3.5rem', background: '#fff' }}>
         <h2 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', marginBottom: '1rem' }}>Ready to find your match?</h2>
         <p style={{ color: '#666', fontSize: '1.1rem', marginBottom: '2rem' }}>
           Answer 5 quick questions and get AI-powered recommendations with live pricing.
         </p>
-        <motion.button whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.97 }}
+        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
           className="btn btn-primary btn-lg" onClick={() => navigate('/decision-support')}>
           <Sparkles size={20} /> Start the Quiz
         </motion.button>

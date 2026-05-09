@@ -1,11 +1,9 @@
 // Fetch real product images from Google Shopping via SerpAPI
 // and update all products in MongoDB
 
-import dotenv from 'dotenv';
+import './config/env.js';
 import mongoose from 'mongoose';
 import Product from './models/Product.js';
-
-dotenv.config();
 
 const SERP_API_BASE = 'https://serpapi.com/search.json';
 

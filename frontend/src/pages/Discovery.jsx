@@ -82,6 +82,17 @@ const ProductCard = ({ p, inCompare, onToggleCompare, disabled }) => {
             🔥 Hot
           </div>
         )}
+        <div style={{
+          position: 'absolute', bottom: 10, left: 10,
+          background: (p.productId && p.productId.startsWith('serp_')) ? 'rgba(255,255,255,0.9)' : 'rgba(16, 185, 129, 0.9)',
+          color: (p.productId && p.productId.startsWith('serp_')) ? '#666' : '#fff',
+          padding: '0.15rem 0.5rem', borderRadius: '4px',
+          fontSize: '0.65rem', fontWeight: 700,
+          backdropFilter: 'blur(4px)',
+          border: '1px solid rgba(0,0,0,0.05)'
+        }}>
+          {(p.productId && p.productId.startsWith('serp_')) ? 'Discovered' : 'Verified'}
+        </div>
       </div>
 
       {/* Content */}
