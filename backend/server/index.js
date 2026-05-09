@@ -51,11 +51,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Connect to DB and start server
-connectDB().then(() => {
+// Connect to DB
+connectDB();
+
+// Only listen if not running on Vercel (Vercel handles the serverless execution)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 GadgetGuru API running on port ${PORT}`);
     console.log(`📦 Products API ready`);
     console.log(`🔐 Auth API ready`);
   });
-});
+}
+
+// Export the app for Vercel serverless functions
+export default app;
