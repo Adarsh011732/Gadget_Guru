@@ -36,28 +36,61 @@ router.post('/register', async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Registration Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      stack: error.stack 
+    });
   }
 });
 
 // ─── POST /api/auth/login ───────────────────────────────────────────────────
 router.post('/login', async (req, res) => {
+  console.log("Login request received");
   try {
     const { email, password } = req.body;
+    console.log("Email from request:", email);
+
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
+
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    console.log("User found:", !!user);
+
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    console.log("Checking password bcrypt match...");
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    console.log("Password match:", isMatch);
+
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    console.log("Generating JWT...");
+    if (!JWT_SECRET) {
+      console.error("FATAL: JWT_SECRET is missing during login attempt");
+      return res.status(500).json({ success: false, message: "Server configuration error: JWT_SECRET missing" });
+    }
+
     const token = generateToken(user._id);
+    console.log("Login successful, token generated");
+
     res.json({
       success: true, token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Login Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      stack: error.stack 
+    });
   }
 });
 
