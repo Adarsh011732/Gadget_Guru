@@ -14,7 +14,8 @@ const PORT = process.env.PORT || 5000;
 // CORS Configuration
 const allowedOrigins = [
   process.env.CORS_ORIGIN,
-  'https://needhelp-gadget.netlify.app', // Explicitly allow the production domain
+  'https://gadget-guru-self.vercel.app', // Explicitly allow the Vercel production domain
+  'https://needhelp-gadget.netlify.app', // Explicitly allow the Netlify production domain
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
